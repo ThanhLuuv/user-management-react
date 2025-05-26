@@ -38,17 +38,18 @@ class AuthService {
         password
       });
 
-      console.log(response)
+      console.log(response.data.data.account.role.name)
 
       
       if (response.data.status === 'success' && response.data.data.token) {
         localStorage.setItem(TOKEN_KEY, response.data.data.token);
-        localStorage.setItem(USER_ROLE_KEY, response.data.data.role.name);
+        localStorage.setItem(USER_ROLE_KEY, response.data.data.account.role.name);
         return response.data;
       }
       
       throw new Error('Đăng nhập thất bại');
     } catch (error) {
+      console.log(error)
       throw this.handleError(error);
     }
   }

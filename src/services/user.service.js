@@ -37,8 +37,8 @@ class UserService {
   async updateProfile(userData) {
     try {
       // Get current user's account ID from profile data
-      const profileResponse = await this.getProfile();
-      const accountId = profileResponse.data.account.id;
+      // const profileResponse = await this.getProfile();
+      // const accountId = profileResponse.data.account.id;
       
       const response = await this.api.put(`${API_ENDPOINTS.UPDATE_PROFILE}`, userData);
       return response.data;
@@ -47,9 +47,21 @@ class UserService {
     }
   }
 
+  async updateUser(id, data){
+    try {
+      console.log(`${API_ENDPOINTS.UPDATE_USER_BY_ID}/${id}`)
+      console.log(data)
+      const response = await this.api.put(`${API_ENDPOINTS.UPDATE_USER_BY_ID(id)}`, data);
+      console.log(response)
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+
   async getAllUsers() {
     try {
-      const response = await this.api.get(API_ENDPOINTS.USERS);
+      const response = await this.api.get(API_ENDPOINTS.ADMIN_USERS);
       return response.data;
     } catch (error) {
       throw this.handleError(error);

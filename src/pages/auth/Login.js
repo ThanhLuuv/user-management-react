@@ -38,9 +38,10 @@ const Login = () => {
    
     try {
       const response = await authService.login(formData.email, formData.password);
+      console.log(response)
       if (response.status === 'success' && response.data.token) {
-        localStorage.setItem(TOKEN_KEY, response.data.token);
-        localStorage.setItem(USER_ROLE_KEY, response.data.role.name);
+        // localStorage.setItem(TOKEN_KEY, response.data.token);
+        // localStorage.setItem(USER_ROLE_KEY, response.data.account.role.name);
         
         // Chỉ show toast nếu chưa show
         if (!toastShown.current) {
@@ -49,7 +50,7 @@ const Login = () => {
         }
        
         setTimeout(() => {
-          if (response.data.role.name === 'admin') {
+          if (response.data.account.role.name === 'admin') {
             navigate('/dashboard');
           } else {
             navigate('/profile');

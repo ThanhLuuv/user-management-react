@@ -45,7 +45,6 @@
   gap: 1.5rem;
 }
 
-
 .formGroup.fullWidth {
   grid-column: 1 / -1;
 }
@@ -86,6 +85,13 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+.input:disabled, select:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 select {
   cursor: pointer;
 }
@@ -93,7 +99,7 @@ select {
 .button {
   width: 200px;
   padding: 0.75rem 1rem;
-  background-color: #3b82f6;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
   border-radius: 8px;
@@ -101,18 +107,73 @@ select {
   font-size: 1rem;
   font-weight: 500;
   margin-top: 2rem;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
   margin-left: auto;
   margin-right: auto;
-  display: block;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
-.button:hover {
-  background-color: #2563eb;
+.button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttonLoading {
+  pointer-events: none;
+}
+
+.buttonSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Page Loading Styles */
+.pageLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.loadingText {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .alert {
@@ -172,5 +233,9 @@ select {
   
   .formRow {
     grid-template-columns: 1fr;
+  }
+  
+  .button {
+    width: 100%;
   }
 }

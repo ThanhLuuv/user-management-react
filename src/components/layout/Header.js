@@ -17,10 +17,10 @@ const Header = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <Link to="/" className={styles.logo}>
+        <div className={styles.logo}>
           <span className="material-icons">people</span>
           <span className={styles.logoText}>UserHub</span>
-        </Link>
+        </div>
         
         <div className={styles.navItems}>
           {isAuthenticated ? (

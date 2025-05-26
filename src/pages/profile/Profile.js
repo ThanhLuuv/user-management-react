@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import userService from '../../services/user.service';
 import styles from './Profile.module.css';
 
 const Profile = () => {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const dateBirthRef = useRef(null);
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -17,9 +20,12 @@ const Profile = () => {
   });
   const [errors, setErrors] = useState({
     name: '',
-    email: ''
+    email: '',
+    date_of_birth: '',
   });
   const [success, setSuccess] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true); // Page loading state
 
   useEffect(() => {
     loadProfile();
@@ -36,6 +42,7 @@ const Profile = () => {
 
   const loadProfile = async () => {
     try {
+      setIsPageLoading(true);
       const response = await userService.getProfile();
       if (response.status === 'success' && response.data) {
         const data = response.data;
@@ -60,6 +67,8 @@ const Profile = () => {
           general: err.message
         }));
       }
+    } finally {
+      setIsPageLoading(false);
     }
   };
 
@@ -86,8 +95,19 @@ const Profile = () => {
     // Validate fields
     const newErrors = {
       name: '',
-      email: ''
+      email: '',
+      date_of_birth: '',
     };
+
+    if(profile.date_of_birth){
+      const selectedDate = new Date(profile.date_of_birth);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // So sánh không có giờ phút
+
+      if (selectedDate > today) {
+        newErrors.date_of_birth = 'Date of birth cannot be in the future';
+      }
+    }
 
     if (!validateName(profile.name)) {
       newErrors.name = 'Name must be at least 2 characters long';
@@ -100,11 +120,19 @@ const Profile = () => {
     setErrors(newErrors);
 
     // If there are any errors, don't submit
-    if (newErrors.name || newErrors.email) {
+    if (newErrors.name || newErrors.email || newErrors.date_of_birth) {
+      if (newErrors.name && nameRef.current) {
+        nameRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (newErrors.email && emailRef.current) {
+        emailRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }else if (newErrors.date_of_birth && dateBirthRef.current) {
+        dateBirthRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
     
     try {
+      setIsLoading(true);
       const response = await userService.updateProfile(profile);
       if (response.status === 'success') {
         toast.success('Profile updated successfully');
@@ -120,8 +148,22 @@ const Profile = () => {
           general: err.message
         }));
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Page loading spinner
+  if (isPageLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.pageLoader}>
+          <div className={styles.spinner}></div>
+          <p className={styles.loadingText}>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -175,6 +217,7 @@ const Profile = () => {
             <div className={`${styles.formGroup} ${styles.fullWidth}`}>
               <label htmlFor="name" className={styles.label}>Name</label>
               <input
+                ref={nameRef}
                 type="text"
                 id="name"
                 name="name"
@@ -182,12 +225,14 @@ const Profile = () => {
                 onChange={handleChange}
                 className={`${styles.input} ${errors.name ? styles.error : ''}`}
                 required
+                disabled={isLoading}
               />
               {errors.name && <div className={styles.errorMessage}>{errors.name}</div>}
             </div>
             <div className={`${styles.formGroup} ${styles.fullWidth}`}>
               <label htmlFor="email" className={styles.label}>Email</label>
               <input
+                ref={emailRef}
                 type="email"
                 id="email"
                 name="email"
@@ -195,6 +240,7 @@ const Profile = () => {
                 onChange={handleChange}
                 className={`${styles.input} ${errors.email ? styles.error : ''}`}
                 required
+                disabled={isLoading}
               />
               {errors.email && <div className={styles.errorMessage}>{errors.email}</div>}
             </div>
@@ -202,13 +248,18 @@ const Profile = () => {
               <div className={styles.formGroup}>
                 <label htmlFor="date_of_birth" className={styles.label}>Date of Birth</label>
                 <input
+                  ref={dateBirthRef}
                   type="date"
                   id="date_of_birth"
                   name="date_of_birth"
-                  value={profile.date_of_birth}
+                  value={profile.date_of_birth? new Date(profile.date_of_birth).toISOString().slice(0,10): ''}
                   onChange={handleChange}
                   className={styles.input}
+                  disabled={isLoading}
                 />
+                {
+                  errors.date_of_birth && ( <div className={styles.errorMessage}>{errors.date_of_birth}</div>)
+                }
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="gender" className={styles.label}>Gender</label>
@@ -218,6 +269,7 @@ const Profile = () => {
                   value={profile.gender}
                   onChange={handleChange}
                   className={styles.input}
+                  disabled={isLoading}
                 >
                   <option value="">Select gender</option>
                   <option value="male">Male</option>
@@ -235,6 +287,7 @@ const Profile = () => {
                 value={profile.phone}
                 onChange={handleChange}
                 className={styles.input}
+                disabled={isLoading}
               />
             </div>
           </form>
@@ -253,6 +306,7 @@ const Profile = () => {
                 value={profile.address}
                 onChange={handleChange}
                 className={styles.input}
+                disabled={isLoading}
               />
             </div>
             <div className={styles.formGroup}>
@@ -264,6 +318,7 @@ const Profile = () => {
                 value={profile.city}
                 onChange={handleChange}
                 className={styles.input}
+                disabled={isLoading}
               />
             </div>
             <div className={styles.formGroup}>
@@ -275,6 +330,7 @@ const Profile = () => {
                 value={profile.district}
                 onChange={handleChange}
                 className={styles.input}
+                disabled={isLoading}
               />
             </div>
             <div className={styles.formGroup}>
@@ -286,19 +342,29 @@ const Profile = () => {
                 value={profile.ward}
                 onChange={handleChange}
                 className={styles.input}
+                disabled={isLoading}
               />
             </div>
           </form>
         </div>
       </div>
-      <button type="submit" className={styles.button} onClick={handleSubmit}>
-      {
-        
-      }
-        Update Profile
+      <button 
+        type="submit" 
+        className={`${styles.button} ${isLoading ? styles.buttonLoading : ''}`} 
+        onClick={handleSubmit} 
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <div className={styles.buttonSpinner}></div>
+            <span>Updating...</span>
+          </>
+        ) : (
+          'Update Profile'
+        )}
       </button>
     </div>
   );
 };
 
-export default Profile; 
+export default Profile;

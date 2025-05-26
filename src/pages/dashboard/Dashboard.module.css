@@ -1,7 +1,8 @@
 .container {
   max-width: 90%;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: 0 auto;
+  margin-top: 64px;
+  padding: 2rem 1rem;
 }
 
 .header {
@@ -12,7 +13,7 @@
 }
 
 .title {
-  font-size: 1.5rem;
+  font-size: 1.875rem;
   font-weight: 600;
   color: #374151;
   margin: 0;
@@ -22,30 +23,49 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #3b82f6;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-.refreshButton:hover {
-  background-color: #2563eb;
+.refreshButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .refreshButton:disabled {
-  background-color: #93c5fd;
   cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.tableCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
 }
 
 .tableContainer {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .table {
@@ -65,6 +85,7 @@
   background-color: #f9fafb;
   font-weight: 600;
   color: #374151;
+  font-size: 0.875rem;
 }
 
 .table tr:last-child td {
@@ -84,12 +105,12 @@
   text-transform: capitalize;
 }
 
-.badgeadmin {
+.badge1 {
   background-color: #fee2e2;
   color: #dc2626;
 }
 
-.badgeuser {
+.badge2 {
   background-color: #e0f2fe;
   color: #0284c7;
 }
@@ -109,6 +130,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
+.buttonPrimary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.buttonSecondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.buttonSecondary:hover:not(:disabled) {
+  background-color: #e5e7eb;
 }
 
 .buttonDanger {
@@ -116,33 +159,46 @@
   color: #dc2626;
 }
 
-.buttonDanger:hover {
+.buttonDanger:hover:not(:disabled) {
   background-color: #fecaca;
+  transform: translateY(-1px);
 }
 
-.loadingContainer {
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+.buttonLoading {
+  pointer-events: none;
+}
+
+/* Page Loading Styles */
+.pageLoader {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
-  color: #6b7280;
+  min-height: 400px;
+  text-align: center;
 }
 
 .spinner {
-  width: 2rem;
-  height: 2rem;
-  border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.loadingText {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
 }
 
 .emptyState {
@@ -155,33 +211,216 @@
 }
 
 .emptyState i {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
   color: #9ca3af;
 }
 
+.emptyState p {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 .alert {
-  padding: 1rem;
+  padding: 0.75rem;
   margin-bottom: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.875rem;
 }
 
 .alertDanger {
-  background-color: #fee2e2;
+  background-color: #fef2f2;
   color: #dc2626;
   border: 1px solid #fecaca;
 }
 
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalDelete {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.modalBody {
+  padding: 1.5rem;
+}
+
+.modalSection {
+  margin-bottom: 2rem;
+}
+
+.modalSection:last-of-type {
+  margin-bottom: 0;
+}
+
+.deleteAlert{
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.input, select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #374151;
+  background: white;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input:focus, select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input:disabled, select:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1.5rem;
+}
+
+.modalActions .button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  border-radius: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    max-width: 95%;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Modal Styles */
+/* .modalOverlayDelete {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+} */
+
+
 @media (max-width: 768px) {
   .container {
     max-width: 100%;
-    margin: 1rem auto;
-  }
-
-  .table {
-    display: block;
-    overflow-x: auto;
+    padding: 1rem;
   }
 
   .header {
@@ -189,4 +428,57 @@
     gap: 1rem;
     align-items: flex-start;
   }
-} 
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .refreshButton {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .table {
+    font-size: 0.75rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .modal {
+    margin: 0.5rem;
+    max-height: 95vh;
+  }
+
+  .modalHeader,
+  .modalBody {
+    padding: 1rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
+
+  .modalActions .button {
+    width: 100%;
+  }
+}
+.errorText {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.input.error {
+  border-color: #dc2626;
+}
+
+.input.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
