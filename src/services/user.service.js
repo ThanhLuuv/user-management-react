@@ -36,10 +36,6 @@ class UserService {
 
   async updateProfile(userData) {
     try {
-      // Get current user's account ID from profile data
-      // const profileResponse = await this.getProfile();
-      // const accountId = profileResponse.data.account.id;
-      
       const response = await this.api.put(`${API_ENDPOINTS.UPDATE_PROFILE}`, userData);
       return response.data;
     } catch (error) {
@@ -47,15 +43,15 @@ class UserService {
     }
   }
 
-  async updateUser(id, data){
+  async updateUser(id, data) {
     try {
-      console.log(`${API_ENDPOINTS.UPDATE_USER_BY_ID}/${id}`)
-      console.log(data)
+      console.log(`${API_ENDPOINTS.UPDATE_USER_BY_ID}/${id}`);
+      console.log(data);
       const response = await this.api.put(`${API_ENDPOINTS.UPDATE_USER_BY_ID(id)}`, data);
-      console.log(response)
+      console.log(response);
       return response.data;
     } catch (error) {
-      throw this.handleError(error)
+      throw this.handleError(error);
     }
   }
 
@@ -82,10 +78,10 @@ class UserService {
       if (error.response.status >= 500) {
         throw {
           type: 'server',
-          message: 'Lỗi server. Vui lòng thử lại sau.'
+          message: 'Server error. Please try again later.'
         };
       }
-      
+
       if (error.response.status === 422) {
         const errors = error.response.data.errors || {};
         const firstError = Object.values(errors)[0];
@@ -97,15 +93,15 @@ class UserService {
 
       throw {
         type: 'client',
-        message: error.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.'
+        message: error.response.data.message || 'An error occurred. Please try again.'
       };
     }
 
     throw {
       type: 'network',
-      message: 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.'
+      message: 'Unable to connect to the server. Please check your internet connection.'
     };
   }
 }
 
-export default new UserService(); 
+export default new UserService();

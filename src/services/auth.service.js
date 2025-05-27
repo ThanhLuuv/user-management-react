@@ -28,7 +28,6 @@ class AuthService {
       },
       (error) => Promise.reject(error)
     );
-
   }
 
   async login(email, password) {
@@ -38,25 +37,21 @@ class AuthService {
         password
       });
 
-      console.log(response.data.data.account.role.name)
 
-      
       if (response.data.status === 'success' && response.data.data.token) {
         localStorage.setItem(TOKEN_KEY, response.data.data.token);
         localStorage.setItem(USER_ROLE_KEY, response.data.data.account.role.name);
         return response.data;
       }
-      
-      throw new Error('Đăng nhập thất bại');
+
+      throw new Error('Login failed');
     } catch (error) {
-      console.log(error)
       throw this.handleError(error);
     }
   }
 
   async register(userData) {
     try {
-      console.log(userData)
       const response = await this.api.post(API_ENDPOINTS.REGISTER, userData);
       return response.data;
     } catch (error) {
@@ -83,7 +78,7 @@ class AuthService {
         localStorage.setItem(TOKEN_KEY, token);
         return token;
       }
-      throw new Error('Không thể làm mới token');
+      throw new Error('Failed to refresh token');
     } catch (error) {
       throw this.handleError(error);
     }
@@ -110,10 +105,10 @@ class AuthService {
       if (error.response.status >= 500) {
         throw {
           type: 'server',
-          message: 'Lỗi server. Vui lòng thử lại sau.'
+          message: 'Server error. Please try again later.'
         };
       }
-      
+
       // Validation error (422) or other client errors
       if (error.response.status === 422) {
         const errors = error.response.data.errors || {};
@@ -127,16 +122,16 @@ class AuthService {
       // Other client errors (400, 401, 403, 404, etc.)
       throw {
         type: 'client',
-        message: error.response.data.message || 'Có lỗi xảy ra. Vui lòng thử lại.'
+        message: error.response.data.message || 'An error occurred. Please try again.'
       };
     }
 
     // Network error
     throw {
       type: 'network',
-      message: 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.'
+      message: 'Unable to connect to the server. Please check your internet connection.'
     };
   }
 }
 
-export default new AuthService(); 
+export default new AuthService();
