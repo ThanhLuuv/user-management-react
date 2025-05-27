@@ -304,13 +304,17 @@ const Dashboard = () => {
                         >
                           <i className="fas fa-eye"></i>
                         </button>
-                        <button
-                          onClick={() => confirmDelete(user)}
-                          className={`${styles.button} ${styles.buttonDanger}`}
-                          title="Delete user"
-                        >
-                          <i className="fas fa-trash-alt"></i>
-                        </button>
+
+                        {
+                          user.role.name === 'admin'? '':
+                        (  <button
+                            onClick={() => confirmDelete(user)}
+                            className={`${styles.button} ${styles.buttonDanger}`}
+                            title="Delete user"
+                          >
+                            <i className="fas fa-trash-alt"></i>
+                          </button>)
+                        }
                       </div>
                     </td>
                   </tr>
