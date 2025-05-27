@@ -66,7 +66,7 @@ class UserService {
 
   async deleteUser(userId) {
     try {
-      const response = await this.api.delete(`${API_ENDPOINTS.USERS}/${userId}`);
+      const response = await this.api.delete(`${API_ENDPOINTS.ADMIN_USER_DETAIL(userId)}`);
       return response.data;
     } catch (error) {
       throw this.handleError(error);

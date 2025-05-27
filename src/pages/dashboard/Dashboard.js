@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [formErrors, setFormErrors] = useState({})
   const [isDeleteModalOpen, setIsDeleteModalOpen]= useState(false);
   const [userDeleteSelected, setUserDeleteSelected]= useState(null);
+  const [isDeleting, setIsDeleting] = useState(false); // Added loading state for delete
 
   useEffect(() => {
     if (!authService.isAdmin()) {
@@ -168,14 +169,16 @@ const Dashboard = () => {
   };
 
   const handleCancelDelete = () => {
+    if (isDeleting) return; // Prevent cancel while deleting
     setIsDeleteModalOpen(false);
     setUserDeleteSelected(null);
   };
 
   const handleConfirmDelete = async () => {
-    if (!userDeleteSelected) return;
+    if (!userDeleteSelected || isDeleting) return;
 
     try {
+      setIsDeleting(true); // Start loading
       const response = await userService.deleteUser(userDeleteSelected.id);
       if (response.status === 'success') {
         setUsers(users.filter(user => user.id !== userDeleteSelected.id));
@@ -186,6 +189,7 @@ const Dashboard = () => {
     } catch (err) {
       toast.error(err.message || 'Something went wrong');
     } finally {
+      setIsDeleting(false); // Stop loading
       setIsDeleteModalOpen(false);
       setUserDeleteSelected(null);
     }
@@ -277,7 +281,7 @@ const Dashboard = () => {
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>No.</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
@@ -285,9 +289,9 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map(user => (
+                {users.map((user, index) => (
                   <tr key={user.id}>
-                    <td>{user.id}</td>
+                    <td>{index + 1}</td>
                     <td>{user.profile?.name || '-'}</td>
                     <td>{user.email}</td>
                     <td>
@@ -493,30 +497,47 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && userDeleteSelected && (
         <div className={styles.modalOverlay} onClick={handleCancelDelete}>
           <div className={styles.modalDelete} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3 className={styles.modalTitle}>Confirm Delete</h3>
-              <button className={styles.closeButton} onClick={handleCancelDelete}>
+              <button 
+                className={styles.closeButton} 
+                onClick={handleCancelDelete}
+                disabled={isDeleting}
+              >
                 <i className="fas fa-times"></i>
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p className={styles.deleteAlert}>Are you sure you want to delete <strong>{userDeleteSelected.profile.name}</strong>?</p>
+              <p className={styles.deleteAlert}>
+                Are you sure you want to delete <strong>{userDeleteSelected.profile.name}</strong>?
+              </p>
             </div>
             <div className={styles.modalActions}>
               <button
                 className={`${styles.button} ${styles.buttonSecondary}`}
                 onClick={handleCancelDelete}
+                disabled={isDeleting}
               >
                 Cancel
               </button>
               <button
-                className={`${styles.button} ${styles.buttonDanger}`}
+                className={`${styles.button} ${styles.buttonDanger} ${isDeleting ? styles.buttonLoading : ''}`}
                 onClick={handleConfirmDelete}
+                disabled={isDeleting}
               >
-                Delete
+                {isDeleting ? (
+                  <>
+                    <div className={styles.buttonSpinner}></div>
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  'Delete'
+                )}
               </button>
             </div>
           </div>

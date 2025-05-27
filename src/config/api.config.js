@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
 
   // Admin (manage users)
   ADMIN_USERS: '/api/admin/users', 
+  // ADMIN_USERS_DELETE: (id) => `/api/admin/users/${id}`, 
   ADMIN_USER_DETAIL: (id) => `/api/admin/users/${id}`, 
 
   // User self-update
