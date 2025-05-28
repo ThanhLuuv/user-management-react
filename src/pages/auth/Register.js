@@ -24,9 +24,23 @@ const Register = () => {
     if (error) setError('');
   };
 
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    return '';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validate password length
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
 
     // Validate password confirmation
     if (formData.password !== formData.password_confirmation) {
@@ -164,12 +178,17 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className={styles.input}
-                placeholder="Create a strong password"
                 required
                 disabled={isLoading}
+                minLength={8}
               />
               <i className={`fas fa-lock ${styles.inputIcon}`}></i>
             </div>
+            {formData.password && formData.password.length < 8 && (
+              <small style={{ color: '#dc3545', fontSize: '12px', marginTop: '4px' }}>
+                Password must be at least 8 characters
+              </small>
+            )}
           </div>
 
           <div className={styles.formGroup}>
